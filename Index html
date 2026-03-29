@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Weather App</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <h1>Weather App</h1>
+
+    <input type="text" id="city" placeholder="Enter city">
+    <button id="btn">Get Weather</button>
+
+    <p id="loading" class="hide">Loading...</p>
+
+    <div id="output"></div>
+
+    <script src="script.js"></script>
+</body>
+</
+html
+
+STYlE,
+body {
+    font-family: Arial;
+    text-align: center;
+    background-color: #e3f2fd;
+}
+
+input, button {
+    padding: 10px;
+    margin: 10px;
+}
+
+#output {
+    margin-top: 20px;
+}
+
+.hide {
+    display: none;
+
+JAVASCRIPT
+const apiKey = "YOUR_API_KEY";
+
+const btn = document.getElementById("btn");
+const cityInput = document.getElementById("city");
+const output = document.getElementById("output");
+const loading = document.getElementById("loading");
+
+btn.addEventListener("click", () => {
+    let city = cityInput.value;
+    getWeather(city);
+});
+
+// ASYNC/AWAIT
+async function getWeather(city) {
+    const url = `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${apiKey}&units=metric`;
+
+    try {
+        loading.classList.remove("hide");
+        output.innerHTML = "";
+
+        const response = await fetch(url);
+
+        if (!response.ok) {
+            throw new Error("City not found");
+        }
+
+        const data = await response.json();
+
+        showWeather(data);
+
+    } catch (error) {
+        output.innerHTML = `<p style="color:red;">${error.message}</p>`;
+    } finally {
+        loading.classList.add("hide");
+    }
+}
+
+// DISPLAY RESULT
+function showWeather(data) {
+    output.innerHTML = `
+        <h2>${data.name}</h2>
+        <p>Temp: ${data.main.temp}°C</p>
+        <p>Condition: ${data.weather[0].description}</p>
+    `;
+}
